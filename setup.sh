@@ -137,7 +137,7 @@ then
 	apt install -y google-chrome-stable sublime-text gitk
 
 	say "  Configuring Sublime"
-	wget -Oq ~/.config/sublime-text-3/Installed\ Packages https://packagecontrol.io/Package%20Control.sublime-package 
+	wget -q -O ~/.config/sublime-text-3/Installed\ Packages https://packagecontrol.io/Package%20Control.sublime-package 
 	
 	say "  Moving Wallpaper"
 	cp eagle.jpg ~/Pictures/wallpaper.jpg
