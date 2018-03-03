@@ -126,6 +126,7 @@ then
 	say "  Installing Docker-Compose"
 	sudo curl -L https://github.com/docker/compose/releases/download/1.19.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
 	sudo chmod +x /usr/local/bin/docker-compose
+	sudo usermod -aG docker $USER
 else
 	say "  Docker already installed"
 fi
@@ -137,7 +138,7 @@ then
 	apt install -y google-chrome-stable sublime-text gitk
 
 	say "  Configuring Sublime"
-	wget -q -O ~/.config/sublime-text-3/Installed\ Packages https://packagecontrol.io/Package%20Control.sublime-package 
+	wget -q -O ~/.config/sublime-text-3/Installed\ Packages/Package\ Control.sublime-package https://packagecontrol.io/Package%20Control.sublime-package 
 	
 	say "  Moving Wallpaper"
 	cp eagle.jpg ~/Pictures/wallpaper.jpg
@@ -150,7 +151,9 @@ then
 	apt install -y libxcb1-dev libxcb-keysyms1-dev libpango1.0-dev libxcb-util0-dev libxcb-icccm4-dev libyajl-dev libstartup-notification0-dev libxcb-randr0-dev libev-dev libxcb-cursor-dev libxcb-xinerama0-dev libxcb-xkb-dev libxkbcommon-dev libxkbcommon-x11-dev autoconf libxcb-xrm0 libxcb-xrm-dev automake feh suckless-tools i3status
 
 	say "  Installing i3-gaps Dotfile"
-	mkdir ~/.config/i3/
+	if [ ! -d ~/.config/i3 ]; then
+		mkdir ~/.config/i3/
+	fi
 	cp i3-config ~/.config/i3/config
 
 
