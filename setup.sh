@@ -25,6 +25,7 @@ while getopts vdih: opt; do
 			;;
 		i)
 			I3GAPS=1;
+			DESKTOP=1;
 			;;
 		*)
 			show_help >&2; exit 1;
@@ -42,12 +43,12 @@ Set up a new installation of Ubuntu.
 	-h 	display help
 	-v	verbose mode
 	-d	install desktop programs like Chrome and Sublime
-	-i	install i3-gaps
+	-i	install i3-gaps (assumes -d)
 EOF
 }
 
-echo test
 
+# nice colorized special messages
 say() {
 	echo -e "\n\e[1m\e[38;5;69m$1\e[m" >&2
 }
@@ -60,7 +61,23 @@ then
 fi
 
 
-say "Starting setup script";
+say "  Starting setup script";
+
+
+# Download dotfiles and dependencies
+say "  Configuring Dotfiles"
+if hash git >dev/null; then
+	if [ ! -f .bashrc ]; then
+		say "  Installing Git";
+		apt install git -y
+		say "  Downloading Setup Repo"
+		git clone git@github.com:bbkolton/setup.git
+		cd setup
+	fi
+	
+	say "  Installing Dotfiles"
+	mv .bashrc ~/.bashrc
+fi
 
 
 if [ $DESKTOP = 1 ]
@@ -92,7 +109,7 @@ echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/source
 say "  Installing Basic Programs"
 apt update;
 apt upgrade -y;
-apt install -y apt-transport-https yarn git nodejs htop
+apt install -y apt-transport-https yarn nodejs htop
 {
 	sudo ln -s $(which nodejs) /usr/bin/node
 } || {
@@ -118,6 +135,12 @@ if [ $DESKTOP = 1 ]
 then
 	say "  Installing Desktop Programs"
 	apt install -y google-chrome-stable sublime-text gitk
+
+	say "  Configuring Sublime"
+	wget -Oq ~/.config/sublime-text-3/Installed\ Packages https://packagecontrol.io/Package%20Control.sublime-package 
+	
+	say "  Moving Wallpaper"
+	cp eagle.jpg ~/Pictures/wallpaper.jpg
 fi
 
 
@@ -125,6 +148,11 @@ if [ $I3GAPS = 1 ]
 then
 	say "  Installing i3-gaps dependencies"
 	apt install -y libxcb1-dev libxcb-keysyms1-dev libpango1.0-dev libxcb-util0-dev libxcb-icccm4-dev libyajl-dev libstartup-notification0-dev libxcb-randr0-dev libev-dev libxcb-cursor-dev libxcb-xinerama0-dev libxcb-xkb-dev libxkbcommon-dev libxkbcommon-x11-dev autoconf libxcb-xrm0 libxcb-xrm-dev automake feh suckless-tools i3status
+
+	say "  Installing i3-gaps Dotfile"
+	mkdir ~/.config/i3/
+	cp i3-config ~/.config/i3/config
+
 
 	say "  Downloading i3-gaps"
 	{
